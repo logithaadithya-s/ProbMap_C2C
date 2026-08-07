@@ -5,6 +5,7 @@ import {
   deleteIssue,
   getUserProfile,
 } from "../controllers/issueController.js";
+import { analyzeImage } from "../controllers/analyzeController.js";
 import upload from "../middlewares/upload.js";
 import FirebaseAuthMiddleware from "../middlewares/firebaseAuth.js";
 const router = express.Router();
@@ -29,6 +30,12 @@ router.get(
   "/profile",
   FirebaseAuthMiddleware.verifySessionCookie,
   getUserProfile
+);
+router.post(
+  "/analyze-image",
+  FirebaseAuthMiddleware.verifySessionCookie,
+  upload.single("image"),
+  analyzeImage
 );
 
 export default router;
