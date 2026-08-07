@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: probmap-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=probmap
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: probmap-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/probmap
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - FRONTEND_URL=http://localhost:5173
+      - ADMIN_URL=http://localhost:5174
+    volumes:
+      - ./backend/src:/app/src
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend/my-react-app
+      dockerfile: Dockerfile
+    container_name: probmap-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+      - VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY}
+      - VITE_FIREBASE_AUTH_DOMAIN=${VITE_FIREBASE_AUTH_DOMAIN}
+      - VITE_FIREBASE_PROJECT_ID=${VITE_FIREBASE_PROJECT_ID}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  admin:
+    build:
+      context: ./Admin/admin
+      dockerfile: Dockerfile
+    container_name: probmap-admin
+    ports:
+      - "5174:5174"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+      - VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY}
+      - VITE_FIREBASE_AUTH_DOMAIN=${VITE_FIREBASE_AUTH_DOMAIN}
+      - VITE_FIREBASE_PROJECT_ID=${VITE_FIREBASE_PROJECT_ID}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
