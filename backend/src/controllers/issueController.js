@@ -2,6 +2,61 @@ import Issue from "../models/issueModel.js";
 import { uploadBufferToCloudinary } from "../utils/cloudinary.js";
 import User from "../models/userModel.js";
 
+/**
+ * @swagger
+ * /issue:
+ *   post:
+ *     summary: Create a new issue
+ *     tags: [Issues]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - description
+ *               - category
+ *               - location
+ *               - image
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               location:
+ *                 type: string
+ *                 description: JSON string with lat/lng
+ *               district:
+ *                 type: string
+ *               importance:
+ *                 type: string
+ *                 enum: [High, Medium, Low]
+ *               cost_estimate:
+ *                 type: string
+ *               is_public_property:
+ *                 type: string
+ *                 enum: [yes, no]
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: Issue created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Issue'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
 export const createIssue = async (req, res) => {
   const firebaseUID = req.user?.uid;
   if (!firebaseUID) {
