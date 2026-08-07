@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import "../Styles/authform.css";
 
 export default function Admin() {

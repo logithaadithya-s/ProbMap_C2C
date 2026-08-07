@@ -31,7 +31,7 @@ If it shows people, animals, private property, nature scenes, mobile phone or an
 Example for public property: {"category": "Pothole", "importance": "High", "cost_estimate": "500-1000", "confidence": 0.85, "is_public_property": true}
 Example for non-public property: {"category": "Others", "importance": null, "cost_estimate": "0", "confidence": 0.9, "is_public_property": false}`;
 
-function parseLLMResponse(responseText) {
+export function parseLLMResponse(responseText) {
   try {
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -49,7 +49,7 @@ function parseLLMResponse(responseText) {
   };
 }
 
-function simpleNSFWDetection(imageBuffer) {
+export function simpleNSFWDetection(imageBuffer) {
   return false;
 }
 

@@ -30,9 +30,9 @@ jobs:
 
       - name: Run all tests
         run: |
-          cd backend && npm test -- --ci
-          cd ../frontend/my-react-app && npm test -- --ci
-          cd ../Admin/admin && npm test -- --ci
+          cd backend && npm test
+          cd ../frontend/my-react-app && npm test
+          cd ../Admin/admin && npm test
 
       - name: Build all projects
         run: |

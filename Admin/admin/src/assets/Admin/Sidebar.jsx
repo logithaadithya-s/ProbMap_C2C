@@ -8,7 +8,6 @@ function Sidebar({
   handleNavClick,
   handleLogout,
   sidebarOpen,
-  toggleSidebar,
   isMobile,
   getInitials,
 }) {

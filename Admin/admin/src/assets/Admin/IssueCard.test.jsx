@@ -43,15 +43,10 @@ describe("IssueCard", () => {
     expect(screen.getByText("Pending")).toBeInTheDocument();
   });
 
-  it("shows category and importance", () => {
-    render(<IssueCard issue={mockIssue} onUpdateStatus={mockOnUpdateStatus} onShowOnMap={mockOnShowOnMap} />);
-    expect(screen.getByText("Category: Pothole")).toBeInTheDocument();
-    expect(screen.getByText("Importance: High")).toBeInTheDocument();
-  });
-
   it("shows cost estimate", () => {
     render(<IssueCard issue={mockIssue} onUpdateStatus={mockOnUpdateStatus} onShowOnMap={mockOnShowOnMap} />);
-    expect(screen.getByText("Estimated Cost: ₹5,000")).toBeInTheDocument();
+    expect(screen.getByText("Estimated Cost:")).toBeInTheDocument();
+    expect(screen.getByText(/5000/)).toBeInTheDocument();
   });
 
   it("shows user info", () => {

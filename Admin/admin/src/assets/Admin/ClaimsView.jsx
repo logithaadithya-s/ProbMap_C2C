@@ -3,10 +3,7 @@ import React from "react";
 function ClaimsView({ 
   claims, 
   volLoading, 
-  fetchClaims,
   reviewClaim,
-  fetchCityIssues,
-  showToast 
 }) {
   if (volLoading) return <p>Loading...</p>;
 

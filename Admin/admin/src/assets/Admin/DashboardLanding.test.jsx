@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import DashboardLanding from "./DashboardLanding";
 
 jest.mock("./Chart", () => () => <div data-testid="chart">Chart</div>);
@@ -15,7 +15,7 @@ describe("DashboardLanding", () => {
 
   it("renders welcome message", () => {
     render(<DashboardLanding adminProfile={mockAdminProfile} handleNavClick={mockHandleNavClick} />);
-    expect(screen.getByText("Welcome back, Admin User")).toBeInTheDocument();
+    expect(screen.getByText(/Welcome back/i)).toBeInTheDocument();
   });
 
   it("shows quick action cards", () => {

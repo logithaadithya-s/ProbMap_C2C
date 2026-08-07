@@ -27,24 +27,15 @@ function Home1() {
 
 function App() {
   const [user, setUser] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if (currentUser && !localStorage.getItem("popupClosed")) {
-        setShowPopup(true);
-      }
     });
     return () => {
       unsubscribe();
     };
   }, []);
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-    localStorage.setItem("popupClosed", "true");
-  };
 
   if (!user) {
     return (

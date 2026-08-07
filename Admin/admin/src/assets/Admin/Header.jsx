@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import "./header.css";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
 import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 function Header() {
-  const toggleSearch = (event) => {
+  const toggleSearch = () => {
     const searchBarContainer = document.getElementById('searchBarContainer');
   if (searchBarContainer.classList.contains('show')) {
       searchBarContainer.classList.remove('show');
@@ -15,7 +15,6 @@ function Header() {
       setTimeout(() => { searchBarContainer.classList.add('show'); }, 10);
   }
   };
-  const galleryRef = useRef(null);
 
   const addThemeTransition = () => {
     document.body.classList.add('theme-flash');
@@ -34,13 +33,6 @@ function Header() {
     addThemeTransition();
     document.body.classList.add('dark-theme');
     document.body.classList.remove('light-theme');
-  };
-
-  const scrollGallery = (direction) => {
-    const scrollAmount = direction * 200;
-    if (galleryRef.current) {
-      galleryRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
   };
   const customTheme = (outerTheme) =>
     createTheme({

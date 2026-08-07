@@ -10,8 +10,6 @@ export default function AuthForm() {
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isAdminVerified, setIsAdminVerified] = useState(false);
-const [verificationDone, setVerificationDone] = useState(false);
 
   const navigate = useNavigate();
 
@@ -74,14 +72,12 @@ if (!res.ok) {
       if(res.ok){
       console.log("Admin logged in:", data);
       navigate("/admin"); 
-       setIsAdminVerified(true);
       }
     } catch (err) {
       console.error("Login failed:", err);
       setServerError(err.message);
     } finally {
       setLoading(false);
-      setVerificationDone(true);
     }
   };
 

@@ -17,7 +17,7 @@ import Webcam from "react-webcam";
 
 // Backend URL
 const BACKEND_URL =
-  process.env.NODE_ENV === "production"
+  import.meta.env.PROD
     ? "https://your-backend-app.railway.app"
     : "http://localhost:8000";
 
@@ -47,9 +47,6 @@ const extractDistrict = (addressObj) => {
     "Unknown"
   );
 };
-
-// Map click handler
-// ...imports remain the same
 
 // Map click handler (now receives setFormData)
 function LocationPicker({ setLocation, setAddress, setDistrict, setFormData }) {
@@ -87,7 +84,7 @@ function LocationPicker({ setLocation, setAddress, setDistrict, setFormData }) {
 }
 
 export default function Upload() {
-  const [location, setLocation] = useState(null);
+  const [, setLocation] = useState(null);
   const [address, setAddress] = useState("");
   const [district, setDistrict] = useState("");
   const [showMap, setShowMap] = useState(false);
@@ -114,7 +111,9 @@ export default function Upload() {
       if (preview && preview.startsWith("blob:")) {
         try {
           URL.revokeObjectURL(preview);
-        } catch {}
+        } catch {
+          // ignore
+        }
       }
     };
   }, [preview]);
@@ -187,7 +186,9 @@ export default function Upload() {
       if (preview && preview.startsWith("blob:")) {
         try {
           URL.revokeObjectURL(preview);
-        } catch {}
+        } catch {
+          // ignore
+        }
       }
       const blobUrl = URL.createObjectURL(file);
       setFormData((prev) => ({ ...prev, photo: file }));
@@ -213,8 +214,9 @@ export default function Upload() {
       });
 
       if (!response.ok) throw new Error("Image analysis failed");
-      return await response.json();
-      console.log("analysis: ");
+      const resultData = await response.json();
+      console.log("analysis: ", resultData);
+      return resultData;
     } catch (error) {
       console.error("Error analyzing image:", error);
       return {
@@ -289,7 +291,9 @@ export default function Upload() {
       if (preview && preview.startsWith("blob:")) {
         try {
           URL.revokeObjectURL(preview);
-        } catch {}
+        } catch {
+          // ignore
+        }
       }
       setPreview(null);
       setLocation(null);
@@ -599,7 +603,9 @@ export default function Upload() {
             if (preview && preview.startsWith("blob:"))
               try {
                 URL.revokeObjectURL(preview);
-              } catch {}
+              } catch {
+                // ignore
+              }
             setPreview(null);
             setLocation(null);
             setAddress("");

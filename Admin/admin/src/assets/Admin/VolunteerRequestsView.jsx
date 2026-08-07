@@ -6,7 +6,6 @@ function VolunteerRequestsView({
   fetchVolunteerRequests,
   updateVolunteerStatus,
   updateVolunteerStatusWithReason,
-  showToast 
 }) {
   if (volLoading) return <p>Loading...</p>;
 

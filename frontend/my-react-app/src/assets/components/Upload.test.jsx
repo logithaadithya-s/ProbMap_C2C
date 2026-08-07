@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import Upload from "./assets/components/Upload";
+import Upload from "./Upload";
 
 jest.mock("react-webcam", () => ({
   __esModule: true,

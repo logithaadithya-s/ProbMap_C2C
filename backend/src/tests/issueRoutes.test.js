@@ -1,20 +1,19 @@
+import { jest, describe, it, expect } from "@jest/globals";
 import express from "express";
 import request from "supertest";
-import issueRoutes from "../routes/issueRoutes.js";
-import { config } from "../config/index.js";
 
-const app = express();
-app.use(express.json());
-app.use("/issue", issueRoutes);
+const mockVerifySession = jest.fn((req, res, next) => {
+  req.user = { uid: "test-uid" };
+  next();
+});
 
-jest.mock("../middlewares/firebaseAuth.js", () => ({
-  verifySessionCookie: (req, res, next) => {
-    req.user = { uid: "test-uid" };
-    next();
+jest.unstable_mockModule("../middlewares/firebaseAuth.js", () => ({
+  default: {
+    verifySessionCookie: (req, res, next) => mockVerifySession(req, res, next),
   },
 }));
 
-jest.mock("../services/geminiService.js", () => ({
+jest.unstable_mockModule("../services/geminiService.js", () => ({
   analyzeImageWithGemini: jest.fn().mockResolvedValue({
     category: "Pothole",
     importance: "High",
@@ -25,40 +24,20 @@ jest.mock("../services/geminiService.js", () => ({
   analyzeImageForNSFW: jest.fn().mockResolvedValue(false),
 }));
 
-jest.mock("../models/issueModel.js", () => {
-  const mockSave = jest.fn().mockResolvedValue({
-    _id: "test-issue-id",
-    title: "Test Issue",
-    description: "Test description",
-    category: "Pothole",
-    location: { lat: 12.9716, lng: 77.5946 },
-    district: "Bangalore",
-    importance: "High",
-    cost_estimate: "500-1000",
-    is_public_property: true,
-    imageUrl: "https://cloudinary.com/test.jpg",
-    userId: "test-uid",
-    createdAt: new Date(),
-  });
-  return jest.fn().mockImplementation(() => ({ save: mockSave }));
-});
+const issueRoutes = (await import("../routes/issueRoutes.js")).default;
 
-jest.mock("../models/userModel.js", () => ({
-  findOneAndUpdate: jest.fn().mockResolvedValue({}),
-}));
+const app = express();
+app.use(express.json());
+app.use("/issue", issueRoutes);
 
 describe("Issue Routes", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe("POST /issue", () => {
     it("returns 401 without auth", async () => {
-      const appNoAuth = express();
-      appNoAuth.use(express.json());
-      appNoAuth.post("/issue", (req, res) => res.status(401).json({ message: "Unauthorized" }));
+      mockVerifySession.mockImplementationOnce((req, res) => {
+        res.status(401).json({ message: "Unauthorized" });
+      });
 
-      const res = await request(appNoAuth)
+      const res = await request(app)
         .post("/issue")
         .send({ title: "Test", description: "Test" });
 
