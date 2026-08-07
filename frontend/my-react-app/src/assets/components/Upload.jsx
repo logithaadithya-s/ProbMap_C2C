@@ -1,5 +1,6 @@
 // src/assets/components/Upload.jsx
 import React, { useState, useRef, useEffect } from "react";
+import toast from "react-hot-toast";
 import "../Styles/upload.css";
 import TextField from "@mui/material/TextField";
 import {
@@ -120,7 +121,7 @@ export default function Upload() {
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported");
+      toast.error("Geolocation not supported");
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -146,7 +147,7 @@ export default function Upload() {
         setShowMap(false);
       },
       (err) => {
-        alert("Could not get location: " + err.message);
+        toast.error("Could not get location: " + err.message);
       }
     );
   };
@@ -195,7 +196,7 @@ export default function Upload() {
       setShowCamera(false);
     } catch (err) {
       console.error("capture error:", err);
-      alert("Could not capture photo: " + err.message);
+      toast.error("Could not capture photo: " + err.message);
     }
   };
 
@@ -231,11 +232,11 @@ export default function Upload() {
     setLoading(true);
     try {
       if (!formData.description || !formData.photo) {
-        alert("Please fill all fields and take/upload a photo!");
+        toast.error("Please fill all fields and take/upload a photo!");
         return;
       }
       if (!formData.location) {
-        alert("Please select or use your location!");
+        toast.error("Please select or use your location!");
         return;
       }
       const analysis = await analyzeImage(formData.photo);
@@ -296,24 +297,27 @@ export default function Upload() {
       setDistrict("");
       setShowMap(false);
       setAnalysisResult(null);
-      alert("✅ Issue submitted successfully!");
+      toast.success("Issue submitted successfully!");
     } catch (err) {
       console.error(err);
-      alert("❌ Error submitting issue: " + (err.message || err));
+      toast.error("Error submitting issue: " + (err.message || err));
     } finally {
       setLoading(false);
     }
   };
 
   const handleQuickAnalyze = async () => {
-    if (!formData.photo) return alert("Please upload an image first!");
+    if (!formData.photo) {
+      toast.error("Please upload an image first!");
+      return;
+    }
     setLoading(true);
     try {
       const analysis = await analyzeImage(formData.photo);
       setAnalysisResult(analysis);
     } catch (error) {
       console.error(error);
-      alert("Error analyzing image: " + error.message);
+      toast.error("Error analyzing image: " + error.message);
     } finally {
       setLoading(false);
     }

@@ -57,7 +57,7 @@ export default function Admin() {
       if (!res.ok) throw new Error(data.error || "Login failed");
 
       console.log("Admin logged in:", data);
-      alert("Admin successfully signed in!");
+      toast.success("Admin successfully signed in!");
       // Redirect or update state to show admin dashboard
     } catch (err) {
       setServerError(err.message);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function VolunteerIssues() {
   const [status, setStatus] = useState(null);
@@ -62,10 +63,10 @@ export default function VolunteerIssues() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit request");
-      alert("Volunteer request submitted!");
+      toast.success("Volunteer request submitted!");
       fetchStatus();
     } catch (e) {
-      alert(e.message);
+      toast.error(e.message);
     }
   };
 
@@ -90,12 +91,12 @@ export default function VolunteerIssues() {
         );
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to submit claim");
-        alert("Claim submitted");
+        toast.success("Claim submitted successfully!");
         fetchDistrictIssues();
       };
       fileEl.click();
     } catch (e) {
-      alert(e.message);
+      toast.error(e.message);
     }
   };
 

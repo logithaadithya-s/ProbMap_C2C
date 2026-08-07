@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import EnhancedAcard from "./EnhancedAcard";
 
 const UserIssues = ({ filterStatus }) => {
@@ -48,8 +49,9 @@ const UserIssues = ({ filterStatus }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete issue");
       setIssues((prev) => prev.filter((issue) => issue._id !== id));
+      toast.success("Issue deleted successfully");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

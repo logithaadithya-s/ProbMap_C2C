@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Navbar from "./assets/components/Navbar";
 import Upload from "./assets/components/Upload";
 import Slider from "./assets/components/Slider";
@@ -46,11 +47,17 @@ function App() {
   };
 
   if (!user) {
-    return <AuthForms />;
+    return (
+      <>
+        <Toaster position="top-right" />
+        <AuthForms />
+      </>
+    );
   }
 
   return (
     <>
+      <Toaster position="top-right" />
       <Router>
         <Navbar />
         <Routes>

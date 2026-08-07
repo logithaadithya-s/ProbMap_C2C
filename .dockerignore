@@ -8,7 +8,6 @@ build
 coverage
 .nyc_output
 .git
-.github
 .vscode
 *.log
 .DS_Store

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import "../Styles/authform.css";
 
 import { auth } from "./firebase/firebase"; 
@@ -100,7 +101,7 @@ console.log("Payload:", {
       if (!res.ok) throw new Error(data.error || "Backend login failed");
 
       console.log("Backend login success:", data);
-      alert("Login successful!");
+      toast.success("Login successful!");
     } else {
       const userCred = await createUserWithEmailAndPassword(
         auth,
@@ -126,11 +127,11 @@ console.log("Payload:", {
       if (!res.ok) throw new Error(data.error || "Backend registration failed");
 
       console.log("Backend registration success:", data);
-      alert("Registration successful!");
+      toast.success("Registration successful!");
     }
   } catch (err) {
     console.error("Auth Error:", err);
-    alert(err.message);
+    toast.error(err.message);
   }
 };
 

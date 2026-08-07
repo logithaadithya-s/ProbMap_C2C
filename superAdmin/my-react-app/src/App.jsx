@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import "./App.css";
 
 const SuperAdminDashboard = () => {
@@ -83,8 +84,9 @@ const SuperAdminDashboard = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to delete admin");
       setAdmins((prev) => prev.filter((a) => a._id !== id));
+      toast.success("Admin deleted successfully");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -95,6 +97,7 @@ const SuperAdminDashboard = () => {
   if (!isAuthenticated) {
     return (
       <div className="login-container">
+        <Toaster position="top-right" />
         <h2>Super Admin Login</h2>
         <form onSubmit={handleLogin} className="login-form">
           <input
@@ -120,6 +123,7 @@ const SuperAdminDashboard = () => {
 
   return (
     <div className="dashboard-container">
+      <Toaster position="top-right" />
       <header>
         <h2>Super Admin Dashboard</h2>
         <button className="logout-btn" onClick={handleLogout}>Logout</button>
