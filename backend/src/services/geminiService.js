@@ -2,7 +2,15 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { config } from "../config/index.js";
 
 const genAI = new GoogleGenerativeAI(config.gemini.apiKey);
-const model = genAI.getGenerativeModel({ model: config.gemini.model });
+const model = genAI.getGenerativeModel({ 
+  model: config.gemini.model,
+  generationConfig: {
+    temperature: 0.1,
+    topK: 32,
+    topP: 1,
+    maxOutputTokens: 4096,
+  }
+});
 
 const ANALYSIS_PROMPT = `Analyze this image and determine if it shows damage to public property.
 
@@ -47,6 +55,12 @@ function simpleNSFWDetection(imageBuffer) {
 
 export async function analyzeImageWithGemini(imageBuffer, mimeType) {
   try {
+    if (!imageBuffer || imageBuffer.length === 0) {
+      throw new Error("Empty image buffer");
+    }
+
+    console.log(`Analyzing image: ${imageBuffer.length} bytes, type: ${mimeType}`);
+    
     const imagePart = {
       inlineData: {
         data: imageBuffer.toString("base64"),
@@ -54,12 +68,18 @@ export async function analyzeImageWithGemini(imageBuffer, mimeType) {
       },
     };
 
+    console.log("Sending to Gemini model:", config.gemini.model);
+    
     const result = await model.generateContent([ANALYSIS_PROMPT, imagePart]);
     const response = await result.response;
     const text = response.text();
+    console.log("Gemini response:", text);
     return parseLLMResponse(text);
   } catch (error) {
-    console.error("❌ Gemini error:", error);
+    console.error("❌ Gemini error:", error.message);
+    if (error.message.includes("does not support image")) {
+      console.error("Model may not support vision. Check GEMINI_API_KEY and model name.");
+    }
     return {
       category: "Others",
       importance: null,
